@@ -4,7 +4,6 @@
       label="Seleziona una Categoria"
       :items="categories"
       v-model="selectedCategory"
-      @change="filterByCategory"
       clearable
     ></v-combobox>
   </div>
@@ -16,7 +15,7 @@ export default {
   data() {
     return {
       selectedCategory: 'Tutte', 
-      categories: ['Tutte', 'smartphones', 'laptops', 'fragrances', 'skincare'], 
+      categories: ['Tutte', 'smartphones', 'laptops', 'fragrances', 'skincare', 'groceries'], 
     };
   },
   watch: {

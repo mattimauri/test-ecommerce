@@ -13,7 +13,7 @@
           md="4"
           lg="4"
         >
-          <ProductCard :product="product" />
+          <ProductCard :product="product" @view="goToDetails" />
         </v-col>
       </v-row>
     </v-container>
@@ -49,6 +49,9 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    goToDetails(productId) {
+      this.$router.push(`/product/${productId}`);
     },
   },
 };
