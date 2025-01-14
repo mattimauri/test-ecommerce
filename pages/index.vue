@@ -13,7 +13,12 @@
           md="4"
           lg="4"
         >
-          <ProductCard :product="product" @view="goToDetails" />
+          <ProductCard 
+            :product="product" 
+            @view="goToDetails"
+            :deleteProduct="deleteProduct" 
+            :updateProduct="updateProduct" 
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -52,6 +57,31 @@ export default {
     },
     goToDetails(productId) {
       this.$router.push(`/product/${productId}`);
+    },
+    async updateProduct(productId, updatedData = null) {
+      try {
+        // Optionally pass updated data for the product
+        const response = await this.$axios.put(`/products/${productId}`, updatedData);
+        console.log('Prodotto aggiornato:', response.data);
+
+        // Update the product in the local list
+        const index = this.products.findIndex(product => product.id === productId);
+        if (index !== -1) {
+          this.products.splice(index, 1, response.data);
+        }
+      } catch (error) {
+        console.error('Errore nell\'aggiornamento del prodotto:', error);
+      }
+    },
+    async deleteProduct(productId) {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert('Product deleted successfully!');
+      } else {
+        alert('Error deleting product.');
+      }
     },
   },
 };

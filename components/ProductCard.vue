@@ -3,9 +3,21 @@
     <img :src="product.thumbnail" :alt="product.title" class="product-image" />
     <h2 class="product-title">{{ product.title }}</h2>
     <p class="product-price">{{ product.price }}€</p>
-    <button @click="$emit('view', product.id)" class="view-details">
-      Visualizza Dettagli
-    </button>
+    <p class="product-availability">Disponibilità: {{ product.stock }}</p>
+
+    <div class="button-row">
+      <v-btn color="primary" @click="goToDetails(product.id)">
+        + Dettagli
+      </v-btn>
+
+      <v-btn color="green" @click="handleUpdateProduct(product.id)">
+        MODIFICA
+      </v-btn>
+
+      <v-btn color="red" @click="handleDeleteProduct(product.id)">
+        Elimina
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -17,27 +29,28 @@ export default {
       type: Object,
       required: true,
     },
+    deleteProduct: {
+      type: Function,
+      required: true,
+    },
+    updateProduct: {
+      type: Function,
+      required: true, 
+    },
+  },
+  methods: {
+    goToDetails(productId) {
+      this.$router.push(`/product/${productId}`);
+    },
+    async handleDeleteProduct(productId) {
+      const confirmDelete = confirm('Sei sicuro di voler eliminare questo prodotto?');
+      if (confirmDelete) {
+        await this.deleteProduct(productId);
+      }
+    },
+    async handleUpdateProduct(productId) {
+      await this.updateProduct(productId);
+    },
   },
 };
 </script>
-
-<style scoped>
-.product-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.view-details {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.view-details:hover {
-  background-color: #0056b3;
-}
-</style>
