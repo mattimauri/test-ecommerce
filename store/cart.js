@@ -17,11 +17,10 @@ export const mutations = {
 };
 
 export const actions = {
-  // Ottieni tutti i prodotti
   async fetchProducts({ commit, rootState }) {
     commit('SET_LOADING', true);
     try {
-      const response = await rootState.$axios.get('/products');  // Usato rootState.$axios per accedere a axios
+      const response = await rootState.$axios.get('/products');  
       commit('SET_PRODUCTS', response.data.products);
     } catch (error) {
       console.error('Errore nel caricamento dei prodotti:', error);
@@ -30,7 +29,6 @@ export const actions = {
     }
   },
 
-  // Ottieni i dettagli di un singolo prodotto
   async fetchProductDetails({ commit, rootState }, id) {
     commit('SET_LOADING', true);
     try {
