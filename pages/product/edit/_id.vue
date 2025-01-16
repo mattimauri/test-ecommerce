@@ -32,7 +32,15 @@ export default {
   methods: {
     async handleUpdateProduct() {
       try {
-        const response = await this.$axios.put(`/products/${this.editableProduct.id}`, this.editableProduct);
+        const updatedProduct = {
+          title: this.editableProduct.title,
+          price: this.editableProduct.price,
+          description: this.editableProduct.description,
+          stock: this.editableProduct.stock,
+        };
+
+        const response = await this.$axios.put(`https://dummyjson.com/products/${this.editableProduct.id}`, updatedProduct);
+
         alert('Prodotto aggiornato con successo!');
         this.$router.push('/'); 
       } catch (error) {
