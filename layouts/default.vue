@@ -10,18 +10,18 @@
       </v-btn>
       <v-toolbar-title>{{ title }}</v-toolbar-title>
 
-      <!-- Cart Button -->
-      <v-spacer></v-spacer>
+    <!-- Cart Button -->
+    <v-spacer></v-spacer>
       <v-btn icon @click="goToCart">
         <v-badge
           :content="cartCount"
           color="red"
           overlap
+          v-if="cartCount > 0"
         >
-          <template v-slot:badge>
-            <v-icon>mdi-cart</v-icon>
-          </template>
+          <v-icon>mdi-cart</v-icon>
         </v-badge>
+        <v-icon v-else>mdi-cart</v-icon>
       </v-btn>
     </v-app-bar>
 
