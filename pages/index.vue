@@ -1,7 +1,18 @@
 <template>
   <div>
     <h1>Lista Prodotti</h1>
+    
+    <!-- Barra di ricerca -->
+    <v-text-field
+      v-model="searchQuery"
+      label="Cerca prodotto"
+      @input="searchProducts"
+      solo
+      clearable
+    />
+    
     <FilterBar @filter="fetchProductsByCategory" />
+    
     <div v-if="loading">Caricamento...</div>
     <v-container>
       <v-row>
@@ -35,6 +46,7 @@ export default {
     return {
       products: [],
       loading: false,
+      searchQuery: '', // Query di ricerca
     };
   },
   mounted() {
@@ -44,9 +56,7 @@ export default {
     async fetchProductsByCategory(category) {
       this.loading = true;
       try {
-        const url = category
-          ? `/products/category/${category}`
-          : '/products'; 
+        const url = category ? `/products/category/${category}` : '/products';
         const response = await this.$axios.get(url);
         this.products = response.data.products;
       } catch (error) {
@@ -55,16 +65,31 @@ export default {
         this.loading = false;
       }
     },
+    async searchProducts() {
+      // Quando l'utente inserisce qualcosa nella barra di ricerca
+      if (this.searchQuery.trim() === '') {
+        // Se non c'è una query di ricerca, carica tutti i prodotti
+        this.fetchProductsByCategory('');
+      } else {
+        this.loading = true;
+        try {
+          const response = await this.$axios.get(`/products/search?q=${this.searchQuery}`);
+          this.products = response.data.products;
+        } catch (error) {
+          console.error('Errore nella ricerca dei prodotti:', error);
+        } finally {
+          this.loading = false;
+        }
+      }
+    },
     goToDetails(productId) {
       this.$router.push(`/product/${productId}`);
     },
     async updateProduct(productId, updatedData = null) {
       try {
-        // Optionally pass updated data for the product
         const response = await this.$axios.put(`/products/${productId}`, updatedData);
         console.log('Prodotto aggiornato:', response.data);
-
-        // Update the product in the local list
+        
         const index = this.products.findIndex(product => product.id === productId);
         if (index !== -1) {
           this.products.splice(index, 1, response.data);
