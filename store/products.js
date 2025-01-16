@@ -22,7 +22,7 @@ export const actions = {
   async fetchProducts({ commit }) {
     commit('SET_LOADING', true);
     try {
-      const response = await api.fetchProducts(this.$axios); // Usa direttamente this.$axios
+      const response = await api.fetchProducts(this.$axios); 
       commit('SET_PRODUCTS', response.data.products);
     } catch (error) {
       console.error('Errore nel caricamento dei prodotti:', error);
@@ -33,7 +33,7 @@ export const actions = {
   async fetchProductDetails({ commit }, { id }) {
     commit('SET_LOADING', true);
     try {
-      const response = await api.fetchProductDetails(this.$axios, id); // Usa direttamente this.$axios
+      const response = await api.fetchProductDetails(this.$axios, id); 
       commit('SET_PRODUCT', response.data);
     } catch (error) {
       console.error('Errore nel caricamento del prodotto:', error);

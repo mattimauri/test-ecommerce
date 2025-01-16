@@ -1,18 +1,15 @@
 <template>
   <div>
     <h1>Lista Prodotti</h1>
-    
     <v-text-field
       v-model="searchQuery"
       label="Cerca prodotto"
       @input="searchProducts"
       solo
       clearable
-      @clear="clearSearch"
+      @click:clear="clearSearch"
     />
-    
     <FilterBar @filter="fetchProductsByCategory" />
-    
     <div v-if="loading">Caricamento...</div>
     <v-container>
       <v-row>
@@ -27,8 +24,7 @@
           <ProductCard 
             :product="product" 
             @view="goToDetails"
-            :deleteProduct="deleteProduct" 
-            :updateProduct="updateProduct" 
+            @addToCart="addToCart"
           />
         </v-col>
       </v-row>
@@ -46,12 +42,12 @@ export default {
     return {
       products: [],
       loading: false,
-      searchQuery: '',  
-      selectedCategory: '',  
+      searchQuery: '',
+      cart: [],
     };
   },
   mounted() {
-    this.fetchProductsByCategory(this.selectedCategory);
+    this.fetchProductsByCategory('');
   },
   methods: {
     async fetchProductsByCategory(category) {
@@ -67,13 +63,12 @@ export default {
       }
     },
     async searchProducts() {
-      const query = this.searchQuery || '';  
-      if (query.trim() === '') {
-        this.fetchProductsByCategory(this.selectedCategory);
+      if (this.searchQuery.trim() === '') {
+        this.fetchProductsByCategory('');
       } else {
         this.loading = true;
         try {
-          const response = await this.$axios.get(`/products/search?q=${query}`);
+          const response = await this.$axios.get(`/products/search?q=${this.searchQuery}`);
           this.products = response.data.products;
         } catch (error) {
           console.error('Errore nella ricerca dei prodotti:', error);
@@ -83,38 +78,20 @@ export default {
       }
     },
     clearSearch() {
-      this.searchQuery = '';  
-      this.fetchProductsByCategory(this.selectedCategory);
+      this.searchQuery = '';
+      this.fetchProductsByCategory('');
     },
     goToDetails(productId) {
       this.$router.push(`/product/${productId}`);
     },
-    async updateProduct(productId, updatedData = null) {
-      try {
-        const response = await this.$axios.put(`/products/${productId}`, updatedData);
-        console.log('Prodotto aggiornato:', response.data);
-        
-        const index = this.products.findIndex(product => product.id === productId);
-        if (index !== -1) {
-          this.products.splice(index, 1, response.data);
-        }
-      } catch (error) {
-        console.error('Errore nell\'aggiornamento del prodotto:', error);
+    addToCart(product) {
+      const existingProduct = this.cart.find((item) => item.id === product.id);
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        this.cart.push({ ...product, quantity: 1 });
       }
-    },
-    async deleteProduct(productId) {
-      try {
-        const response = await fetch(`/api/products/${productId}`, {
-          method: 'DELETE',
-        });
-        if (response.ok) {
-          alert('Product deleted successfully!');
-        } else {
-          alert('Error deleting product.');
-        }
-      } catch (error) {
-        console.error('Errore nel tentativo di cancellazione del prodotto:', error);
-      }
+      localStorage.setItem('cart', JSON.stringify(this.cart));
     },
   },
 };
