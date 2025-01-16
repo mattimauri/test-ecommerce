@@ -46,15 +46,15 @@ export default {
     return {
       products: [],
       loading: false,
-      searchQuery: '',
+      searchQuery: '',  
+      selectedCategory: '',  
     };
   },
   mounted() {
-    this.fetchProductsByCategory('');
+    this.fetchProductsByCategory(this.selectedCategory);
   },
   methods: {
     async fetchProductsByCategory(category) {
-      console.log('Fetching products by category: ', category);
       this.loading = true;
       try {
         const url = category ? `/products/category/${category}` : '/products';
@@ -67,9 +67,9 @@ export default {
       }
     },
     async searchProducts() {
-      const query = this.searchQuery || ''; 
+      const query = this.searchQuery || '';  
       if (query.trim() === '') {
-        this.fetchProductsByCategory('');
+        this.fetchProductsByCategory(this.selectedCategory);
       } else {
         this.loading = true;
         try {
@@ -83,9 +83,8 @@ export default {
       }
     },
     clearSearch() {
-      console.log('clearSearch triggered');
-      this.searchQuery = '';
-      this.fetchProductsByCategory('');
+      this.searchQuery = '';  
+      this.fetchProductsByCategory(this.selectedCategory);
     },
     goToDetails(productId) {
       this.$router.push(`/product/${productId}`);
