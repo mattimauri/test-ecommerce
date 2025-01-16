@@ -1,20 +1,37 @@
 <template>
   <div class="product-card">
     <img :src="product.thumbnail" :alt="product.title" class="product-image" />
-    <h2 class="product-title">{{ product.title }}</h2>
-    <p class="product-price">{{ product.price }}€</p>
-    <p class="product-availability">Disponibilità: {{ product.stock }}</p>
+    <div class="product-info">
+      <h2 class="product-title">{{ product.title }}</h2>
+      <p class="product-price">{{ product.price }}€</p>
+      <p class="product-availability">Disponibilità: {{ product.stock }}</p>
+    </div>
 
     <div class="button-row">
-      <v-btn color="primary" @click="goToDetails(product.id)">
+      <v-btn 
+        color="primary" 
+        @click="goToDetails(product.id)"
+        block
+        class="button-mobile"
+      >
         + Dettagli
       </v-btn>
 
-      <v-btn color="green" @click="goToEdit(product.id)">
+      <v-btn 
+        color="green" 
+        @click="goToEdit(product.id)"
+        block
+        class="button-mobile"
+      >
         MODIFICA
       </v-btn>
 
-      <v-btn color="red" @click="handleDeleteProduct(product.id)">
+      <v-btn 
+        color="red" 
+        @click="handleDeleteProduct(product.id)"
+        block
+        class="button-mobile"
+      >
         Elimina
       </v-btn>
     </div>
@@ -35,7 +52,7 @@ export default {
     },
     updateProduct: {
       type: Function,
-      required: true, 
+      required: true,
     },
   },
   methods: {
@@ -43,7 +60,6 @@ export default {
       this.$router.push(`/product/${productId}`);
     },
     goToEdit(productId) {
-      // Navigate to the edit page for the product
       this.$router.push(`/product/edit/${productId}`);
     },
     async handleDeleteProduct(productId) {
@@ -58,33 +74,27 @@ export default {
         }
       }
     },
-    async handleUpdateProduct(productId) {
-      try {
-        await this.updateProduct(productId);
-        alert('Prodotto aggiornato con successo!');
-      } catch (error) {
-        console.error('Errore durante l\'aggiornamento del prodotto:', error);
-        alert('Errore durante l\'aggiornamento del prodotto.');
-      }
-    },
   },
 };
 </script>
 
 <style scoped>
 .product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 16px;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 16px;
+  height: 100%;  /* Ensures all cards have equal height */
+  transition: all 0.3s ease;
 }
 
-.button-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+.product-info {
+  flex-grow: 1;  /* Allows the info section to grow and take the remaining space */
 }
 
 .product-image {
@@ -98,5 +108,27 @@ export default {
 .product-price,
 .product-availability {
   margin: 8px 0;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.button-mobile {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .button-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .button-mobile {
+    width: auto;
+  }
 }
 </style>
