@@ -36,10 +36,10 @@ export default {
   },
   methods: {
     goHome() {
-      this.$router.push('/'); // Naviga alla home
+      this.$router.push('/'); 
     },
     goBack() {
-      this.$router.go(-1); // Torna indietro nella cronologia
+      this.$router.go(-1); 
     }
   }
 }
