@@ -2,13 +2,13 @@
   <div>
     <h1>Lista Prodotti</h1>
     
-    <!-- Barra di ricerca -->
     <v-text-field
       v-model="searchQuery"
       label="Cerca prodotto"
       @input="searchProducts"
       solo
       clearable
+      @clear="clearSearch"
     />
     
     <FilterBar @filter="fetchProductsByCategory" />
@@ -46,7 +46,7 @@ export default {
     return {
       products: [],
       loading: false,
-      searchQuery: '', // Query di ricerca
+      searchQuery: '',
     };
   },
   mounted() {
@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     async fetchProductsByCategory(category) {
+      console.log('Fetching products by category: ', category);
       this.loading = true;
       try {
         const url = category ? `/products/category/${category}` : '/products';
@@ -66,14 +67,13 @@ export default {
       }
     },
     async searchProducts() {
-      // Quando l'utente inserisce qualcosa nella barra di ricerca
-      if (this.searchQuery.trim() === '') {
-        // Se non c'è una query di ricerca, carica tutti i prodotti
+      const query = this.searchQuery || ''; 
+      if (query.trim() === '') {
         this.fetchProductsByCategory('');
       } else {
         this.loading = true;
         try {
-          const response = await this.$axios.get(`/products/search?q=${this.searchQuery}`);
+          const response = await this.$axios.get(`/products/search?q=${query}`);
           this.products = response.data.products;
         } catch (error) {
           console.error('Errore nella ricerca dei prodotti:', error);
@@ -81,6 +81,11 @@ export default {
           this.loading = false;
         }
       }
+    },
+    clearSearch() {
+      console.log('clearSearch triggered');
+      this.searchQuery = '';
+      this.fetchProductsByCategory('');
     },
     goToDetails(productId) {
       this.$router.push(`/product/${productId}`);
@@ -99,13 +104,17 @@ export default {
       }
     },
     async deleteProduct(productId) {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert('Product deleted successfully!');
-      } else {
-        alert('Error deleting product.');
+      try {
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          alert('Product deleted successfully!');
+        } else {
+          alert('Error deleting product.');
+        }
+      } catch (error) {
+        console.error('Errore nel tentativo di cancellazione del prodotto:', error);
       }
     },
   },
