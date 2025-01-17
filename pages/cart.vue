@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { EventBus } from '~/pages/index.vue';
+import { EventBus } from '~/utils/eventBus.js';
 
 export default {
   data() {
@@ -50,12 +50,14 @@ export default {
   },
   mounted() {
     this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+    EventBus.$emit('cart-updated', this.cart);
   },
   methods: {
     removeFromCart(productId) {
       this.cart = this.cart.filter((item) => item.id !== productId);
       localStorage.setItem('cart', JSON.stringify(this.cart));
-      EventBus.$emit('cart-updated', this.cart);
+      console.log("removeFromCart", this.cart)
+      EventBus.$emit('cart-updated', this.cart); 
     },
     checkout() {
       alert('Checkout completato!');

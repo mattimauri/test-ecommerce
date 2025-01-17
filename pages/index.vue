@@ -62,9 +62,7 @@
 <script>
 import FilterBar from '~/components/FilterBar';
 import ProductCard from '~/components/ProductCard';
-import Vue from 'vue';
-
-const EventBus = new Vue();
+import { EventBus } from '~/utils/eventBus.js';
 
 export default {
   components: { FilterBar, ProductCard },
@@ -144,5 +142,4 @@ export default {
   },
 };
 
-export { EventBus };
 </script>

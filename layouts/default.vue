@@ -10,8 +10,8 @@
       </v-btn>
       <v-toolbar-title>{{ title }}</v-toolbar-title>
 
-    <!-- Cart Button -->
-    <v-spacer></v-spacer>
+      <!-- Cart Button -->
+      <v-spacer></v-spacer>
       <v-btn icon @click="goToCart">
         <v-badge
           :content="cartCount"
@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import { EventBus } from '~/utils/eventBus.js';
+
 export default {
   name: 'SimpleLayout',
   data() {
@@ -58,9 +60,18 @@ export default {
     cart: {
       handler() {
         localStorage.setItem('cart', JSON.stringify(this.cart));
+        EventBus.$emit('cart-updated', this.cart); 
       },
       deep: true,
     },
+  },
+  mounted() {
+    EventBus.$on('cart-updated', (updatedCart) => {
+      this.cart = updatedCart;
+    });
+  },
+  beforeDestroy() {
+    EventBus.$off('cart-updated');
   },
   methods: {
     goHome() {
