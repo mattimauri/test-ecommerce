@@ -137,6 +137,12 @@ export default {
       EventBus.$emit('cart-updated', this.cart);
     },
   },
+  watch: {
+    cart(newCart) {
+      this.cartCount; 
+      localStorage.setItem('cart', JSON.stringify(newCart)); 
+    },
+  },
   beforeDestroy() {
     EventBus.$off('cart-updated');
   },
